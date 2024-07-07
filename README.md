@@ -78,3 +78,5 @@ is being edited. You can use `nox` for this purpose as a placeholder.
 #### Other editors
 
 If you'd like to see explicit support for more editors in this template, please open a [pull request](https://github.com/hypergonial/arc-template/pulls).
+
+networkvirus: text
