@@ -21,7 +21,7 @@ def code_auth():
     return device_code, user_code
 
 
-def save_auth(refresh_token, token, uid, dynamodb=None):
+def save_auth(refresh_token, token, uid: str, dynamodb=None):
     dynamodb = boto3.resource("dynamodb", region_name="us-east-2")
     table = dynamodb.Table("hologarden")  # type: ignore
     response = table.put_item(
@@ -31,7 +31,7 @@ def save_auth(refresh_token, token, uid, dynamodb=None):
     print("Successfully authorized.")
 
 
-def code_refresh(uid, dynamodb=None):
+def code_refresh(uid: str, dynamodb=None):
     g = Github()
     app = g.get_oauth_application(CLIENT_ID, CLIENT_SECRET)
     print(uid)
@@ -62,22 +62,28 @@ def code_refresh(uid, dynamodb=None):
         print(e)
 
 
-def access_repo(auth, github_user, repo_name):
+def access_repo(auth, github_user: str, repo_name: str):
     g = Github(auth=auth)
     g.get_user().login
     repo = g.get_repo(f"{github_user}/{repo_name}")
     return repo
 
 
-def upload_file(repo, path, commit_message, contents):
+def upload_file(repo, path: str, commit_message: str, contents: str):
     repo.create_file(path, commit_message, contents)
-    print(f"File {path} uploaded.")
 
 
-def auth_login(uid):
+def auth_login(uid: str):
     dynamodb = boto3.resource("dynamodb", region_name="us-east-2")
     table = dynamodb.Table("hologarden")  # type: ignore
     response = table.get_item(Key={"userID": str(uid), "type": "auth"})
     token = response["Item"]["gh_token"]
     auth = Auth.Token(token)
     return auth
+
+
+def auth_check(uid: str):  # check if someone has used the /start command before
+    dynamodb = boto3.resource("dynamodb", region_name="us-east-2")
+    table = dynamodb.Table("hologarden")  # type: ignore
+    response = table.get_item(Key={"userID": str(uid), "type": "auth"})
+    return response["Item"]

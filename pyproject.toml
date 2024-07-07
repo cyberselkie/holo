@@ -1,7 +1,7 @@
 [tool.ruff]
 exclude = ["docs", "build"]
 line-length = 120
-target-version = "py310"    # CHANGE ME if using newer Python
+target-version = "py312"    # CHANGE ME if using newer Python
 
 [tool.ruff.lint]
 select = [
