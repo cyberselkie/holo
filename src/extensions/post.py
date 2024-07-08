@@ -67,12 +67,14 @@ async def edit_slash(
                 flags=hikari.MessageFlag.EPHEMERAL,
             )
         else:
+            path = fp.removesuffix(f"/{filename}")
+            
             modal = Post()
             repository = miru.TextInput(
                 label=f"{gh_username}/{repo}", custom_id="repository", value=f"{gh_username}/{repo}", required=True
             )
             gh_branch = miru.TextInput(label="Branch", custom_id="gh_branch", value=branch, required=True)
-            filepath = miru.TextInput(label=fp, custom_id="filepath", value=fp, required=False)
+            filepath = miru.TextInput(label=fp, custom_id="filepath", value=path, required=False)
             post_contents = miru.TextInput(
                 label="File Contents",
                 custom_id="post_contents",
