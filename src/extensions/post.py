@@ -161,7 +161,7 @@ class Post(miru.Modal, title="Write a Markdown File"):
             if ctx.get_value_by_id("filepath") == "":
                 fp = post_name
             else:
-                fp = f"{ctx.get_value_by_id('filepath')}/{post_name}"
+                fp = f"{ctx.get_value_by_id('filepath')}/{ctx.get_value_by_id('post_title'}"
 
             repo = g.get_repo(repository)
             contents = retrieve_contents(uid, user, gh_repo, fp)
