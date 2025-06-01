@@ -1,6 +1,7 @@
 import arc
 import hikari
 import miru
+import asyncio
 
 from src.func.files import *
 from src.func.gitauth import *
@@ -46,7 +47,7 @@ async def post_slash(ctx: arc.GatewayContext, client: miru.Client = arc.inject()
         await ctx.respond("Use the /start command!", flags=hikari.MessageFlag.EPHEMERAL)
 
 
-@plugin.include
+""" @plugin.include
 @arc.slash_command("edit", "Edit a Markdown File")
 async def edit_slash(
     ctx: arc.GatewayContext,
@@ -68,7 +69,7 @@ async def edit_slash(
             )
         else:
             path = fp.removesuffix(f"/{filename}")
-            
+
             modal = Post()
             repository = miru.TextInput(
                 label=f"{gh_username}/{repo}", custom_id="repository", value=f"{gh_username}/{repo}", required=True
@@ -94,11 +95,11 @@ async def edit_slash(
             await ctx.respond_with_builder(builder)
             client.start_modal(modal)
     else:
-        await ctx.respond("Use the /start command!", flags=hikari.MessageFlag.EPHEMERAL)
+        await ctx.respond("Use the /start command!", flags=hikari.MessageFlag.EPHEMERAL) """
 
 
 @plugin.include
-@arc.message_command("Save Message", is_dm_enabled=True)
+@arc.message_command("Save Message")
 async def append_msg_command(
     ctx: arc.GatewayContext, message: hikari.Message, client: miru.Client = arc.inject()
 ) -> None:
@@ -106,7 +107,7 @@ async def append_msg_command(
     if auth_check(uid):
         code_refresh(uid)
 
-        message_contents = f"{message.author}: {message.content}"
+        message_contents = f"{message.author}: {message.content}\n\n"
         modal = Post()
 
         repository = miru.TextInput(
@@ -146,9 +147,11 @@ class Post(miru.Modal, title="Write a Markdown File"):
         repository = ctx.get_value_by_id("repository")
 
         x = validate_repo(repository)
+
         if x is None:
             await ctx.respond("Check your repository field!")
         else:
+            await ctx.defer()
             auth = auth_login(uid)
             g = Github(auth=auth)
             g.get_user().login
@@ -169,9 +172,12 @@ class Post(miru.Modal, title="Write a Markdown File"):
             contents = retrieve_contents(uid, user, gh_repo, fp)
             if contents:
                 file, filename = download_contents(contents)
-                body = f"{file}\n{body}"
+                body = f"{file}\n\n{body}"
                 repo.update_file(contents.path, "Updated via Discord", body, contents.sha)  # type: ignore
-                await ctx.respond(f"File located at <{contents.html_url}> updated.", flags=hikari.MessageFlag.EPHEMERAL)  # type: ignore
+                await ctx.respond(
+                    f"File located at <https://github.com/{user}/{gh_repo}/blob/{ctx.get_value_by_id('gh_branch')}/{fp}> updated.",
+                    flags=hikari.MessageFlag.EPHEMERAL,
+                )
             else:
                 repo.create_file(path=fp, message=post_name, content=body, branch=ctx.get_value_by_id("gh_branch"))
                 print(repo)

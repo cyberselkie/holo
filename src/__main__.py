@@ -1,7 +1,9 @@
+import os
+
 import arc
-import boto3
 import hikari
 import miru
+from dotenv import load_dotenv
 
 # Welcome to arc!
 
@@ -10,15 +12,16 @@ import miru
 # - GitHub repository: https://github.com/hypergonial/hikari-arc
 # - Discord server to get help: https://discord.gg/hikari
 
-ssm = boto3.client("ssm", region_name="us-east-2")
-token = ssm.get_parameter(Name="/hologarden/token", WithDecryption=True)
-BOT_TOKEN = token["Parameter"]["Value"]
-
-bot = hikari.GatewayBot(BOT_TOKEN)
+load_dotenv()
+BOT_TOKEN = os.getenv("BOT_TOKEN")
+bot = hikari.GatewayBot(BOT_TOKEN)  # type: ignore
 
 
 # Initialize arc with the bot:
-arc_client = arc.GatewayClient(bot)
+arc_client = arc.GatewayClient(
+    bot,
+    integration_types=[hikari.ApplicationIntegrationType.GUILD_INSTALL, hikari.ApplicationIntegrationType.USER_INSTALL],
+)
 client = miru.Client.from_arc(arc_client)
 
 

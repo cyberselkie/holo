@@ -160,3 +160,7 @@ cython_debug/
 
 # Finder
 .DS_Store
+
+device_code
+.idea
+.vscode

@@ -1,13 +1,14 @@
+import os
+
 import boto3
 import requests
 from botocore.exceptions import ClientError
+from dotenv import load_dotenv
 from github import Auth, Github
 
-ssm = boto3.client("ssm", region_name="us-east-2")
-token = ssm.get_parameter(Name="/hologarden/client_id", WithDecryption=True)
-CLIENT_ID = token["Parameter"]["Value"]
-secret = ssm.get_parameter(Name="/hologarden/client_secret", WithDecryption=True)
-CLIENT_SECRET = secret["Parameter"]["Value"]
+load_dotenv()
+CLIENT_ID = os.getenv("GH_CLIENT_ID")
+CLIENT_SECRET = os.getenv("GH_CLIENT_SECRET")
 
 
 def code_auth():
@@ -21,7 +22,7 @@ def code_auth():
     return device_code, user_code
 
 
-def save_auth(refresh_token, token, uid: str, dynamodb=None):
+def save_auth(refresh_token, token, uid: str):
     dynamodb = boto3.resource("dynamodb", region_name="us-east-2")
     table = dynamodb.Table("hologarden")  # type: ignore
     response = table.put_item(
@@ -33,7 +34,7 @@ def save_auth(refresh_token, token, uid: str, dynamodb=None):
 
 def code_refresh(uid: str, dynamodb=None):
     g = Github()
-    app = g.get_oauth_application(CLIENT_ID, CLIENT_SECRET)
+    app = g.get_oauth_application(CLIENT_ID, CLIENT_SECRET)  # type: ignore
     print(uid)
     try:
         dynamodb = boto3.resource("dynamodb", region_name="us-east-2")
