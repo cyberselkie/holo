@@ -18,12 +18,22 @@ async def post_slash(ctx: arc.GatewayContext, client: miru.Client = arc.inject()
     if auth_check(uid):
         code_refresh(uid)
         modal = Post()
-
-        repository = miru.TextInput(
-            label="Username/Repository", custom_id="repository", placeholder="cyberselkie/holo", required=True
-        )
-        gh_branch = miru.TextInput(label="Branch", custom_id="gh_branch", placeholder="main", required=True)
-        filepath = miru.TextInput(label="Filepath", custom_id="filepath", placeholder="file/path/here", required=False)
+        config = config_check(uid)
+        if config:
+            branch, fp, gh_user, repo, title = config_retrieve(uid)
+            repository = miru.TextInput(
+                label="Username/Repository", custom_id="repository", placeholder="cyberselkie/holo", value=f"{gh_user}/{repo}", required=True
+            )
+            gh_branch = miru.TextInput(label="Branch", custom_id="gh_branch", placeholder="main", value=branch, required=True)
+            filepath = miru.TextInput(label="Filepath", custom_id="filepath", placeholder="file/path/here", value=fp, required=False)
+            post_title = miru.TextInput(label="Title", custom_id="post_title", placeholder="MyNote", value=title, required=True)
+        else:
+            repository = miru.TextInput(
+                label="Username/Repository", custom_id="repository", placeholder="cyberselkie/holo", required=True
+            )
+            gh_branch = miru.TextInput(label="Branch", custom_id="gh_branch", placeholder="main", required=True)
+            filepath = miru.TextInput(label="Filepath", custom_id="filepath", placeholder="file/path/here", required=False)
+            post_title = miru.TextInput(label="Title", custom_id="post_title", placeholder="MyNote", required=True)
 
         post_contents = miru.TextInput(
             label="File Contents",
@@ -32,7 +42,6 @@ async def post_slash(ctx: arc.GatewayContext, client: miru.Client = arc.inject()
             style=hikari.TextInputStyle.PARAGRAPH,
             required=True,
         )
-        post_title = miru.TextInput(label="Title", custom_id="post_title", placeholder="MyNote", required=True)
 
         modal.add_item(repository)
         modal.add_item(gh_branch)
@@ -109,12 +118,23 @@ async def append_msg_command(
 
         message_contents = f"{message.author}: {message.content}\n\n"
         modal = Post()
+        config = config_check(uid)
+        if config:
+            branch, fp, gh_user, repo, title = config_retrieve(uid)
+            repository = miru.TextInput(
+                label="Username/Repository", custom_id="repository", placeholder="cyberselkie/holo", value=f"{gh_user}/{repo}", required=True
+            )
+            gh_branch = miru.TextInput(label="Branch", custom_id="gh_branch", placeholder="main", value=branch, required=True)
+            filepath = miru.TextInput(label="Filepath", custom_id="filepath", placeholder="file/path/here", value=fp, required=False)
+            post_title = miru.TextInput(label="Title", custom_id="post_title", placeholder="MyNote", value=title, required=True)
 
-        repository = miru.TextInput(
-            label="Username/Repository", custom_id="repository", placeholder="cyberselkie/holo", required=True
-        )
-        gh_branch = miru.TextInput(label="Branch", custom_id="gh_branch", placeholder="main", required=True)
-        filepath = miru.TextInput(label="Filepath", custom_id="filepath", placeholder="file/path/here", required=False)
+        else:
+            repository = miru.TextInput(
+                label="Username/Repository", custom_id="repository", placeholder="cyberselkie/holo", required=True
+            )
+            gh_branch = miru.TextInput(label="Branch", custom_id="gh_branch", placeholder="main", required=True)
+            filepath = miru.TextInput(label="Filepath", custom_id="filepath", placeholder="file/path/here", required=False)
+            post_title = miru.TextInput(label="Title", custom_id="post_title", placeholder="MyNote", required=True)
 
         post_contents = miru.TextInput(
             label="File Contents",
@@ -123,7 +143,6 @@ async def append_msg_command(
             style=hikari.TextInputStyle.PARAGRAPH,
             required=True,
         )
-        post_title = miru.TextInput(label="Title", custom_id="post_title", placeholder="MyNote", required=True)
 
         modal.add_item(repository)
         modal.add_item(gh_branch)
@@ -180,8 +199,6 @@ class Post(miru.Modal, title="Write a Markdown File"):
                 )
             else:
                 repo.create_file(path=fp, message=post_name, content=body, branch=ctx.get_value_by_id("gh_branch"))
-                print(repo)
-                print(f"{post_name} uploaded.")
                 await ctx.respond(
                     f"{post_name} uploaded to https://github.com/{user}/{gh_repo}/blob/{ctx.get_value_by_id('gh_branch')}/{fp}.",
                     flags=hikari.MessageFlag.EPHEMERAL,

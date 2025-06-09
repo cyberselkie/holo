@@ -40,7 +40,6 @@ def code_refresh(uid: str, dynamodb=None):
         dynamodb = boto3.resource("dynamodb", region_name="us-east-2")
         table = dynamodb.Table("hologarden")  # type: ignore
         response = table.get_item(Key={"userID": str(uid), "type": "auth"})
-        print(response)
         t = response["Item"]["refresh_token"]
         token = app.refresh_access_token(t)
         update_token = table.update_item(
@@ -56,9 +55,7 @@ def code_refresh(uid: str, dynamodb=None):
             ReturnValues="UPDATED_NEW",
         )
         print(update_token)
-        print("update token")
         print(update_refresh)
-        print("Token refreshed.")
     except ClientError as e:
         print(e)
 
@@ -88,3 +85,19 @@ def auth_check(uid: str):  # check if someone has used the /start command before
     table = dynamodb.Table("hologarden")  # type: ignore
     response = table.get_item(Key={"userID": str(uid), "type": "auth"})
     return response["Item"]
+
+
+def config_check(uid: str):
+    dynamodb = boto3.resource("dynamodb", region_name="us-east-2")
+    table = dynamodb.Table("hologarden-config")  # type: ignore
+    response = table.get_item(Key={"userID": str(uid)})
+    try:
+        return response["Item"]
+    except:
+        return False
+
+def config_retrieve(uid: str):
+    dynamodb = boto3.resource("dynamodb", region_name="us-east-2")
+    table = dynamodb.Table("hologarden-config")  # type: ignore
+    response = table.get_item(Key={"userID": str(uid)})
+    return response["Item"]["branch"], response["Item"]["filepath"], response["Item"]["gh_username"], response["Item"]["repository"], response["Item"]["title"]

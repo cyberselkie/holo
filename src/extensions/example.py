@@ -1,4 +1,5 @@
 import arc
+import hikari
 
 # For more info on plugins & extensions, see: https://arc.hypergonial.com/guides/plugins_extensions/
 
@@ -8,7 +9,7 @@ plugin = arc.GatewayPlugin("example")
 @plugin.include
 @arc.slash_command("ping", "Pong!")
 async def ping_slash(ctx: arc.GatewayContext) -> None:
-    await ctx.respond("Pong!")
+    await ctx.respond("Pong!", flags=hikari.MessageFlag.EPHEMERAL)
 
 
 @arc.loader

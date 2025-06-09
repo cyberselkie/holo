@@ -20,7 +20,7 @@ bot = hikari.GatewayBot(BOT_TOKEN)  # type: ignore
 # Initialize arc with the bot:
 arc_client = arc.GatewayClient(
     bot,
-    integration_types=[hikari.ApplicationIntegrationType.GUILD_INSTALL, hikari.ApplicationIntegrationType.USER_INSTALL],
+    integration_types=[hikari.ApplicationIntegrationType.USER_INSTALL],
 )
 client = miru.Client.from_arc(arc_client)
 
