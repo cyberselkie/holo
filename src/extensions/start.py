@@ -55,7 +55,7 @@ async def start(ctx: arc.GatewayContext, client: miru.Client = arc.inject()) -> 
     db.close()
     await ctx.respond(
         f"""Enter the code `{user_code}` at <https://github.com/login/device> to allow this bot to upload files on your behalf.
-                      No uploads or changes will be made that are not explicitly called by you. Click the button when you've entered the code!""",
+            No uploads or changes will be made that are not explicitly called by you. Click the button when you've entered the code!""",
         flags=hikari.MessageFlag.EPHEMERAL,
         components=view,
     )
