@@ -22,18 +22,30 @@ async def post_slash(ctx: arc.GatewayContext, client: miru.Client = arc.inject()
         if config:
             branch, fp, gh_user, repo, title = config_retrieve(uid)
             repository = miru.TextInput(
-                label="Username/Repository", custom_id="repository", placeholder="cyberselkie/holo", value=f"{gh_user}/{repo}", required=True
+                label="Username/Repository",
+                custom_id="repository",
+                placeholder="cyberselkie/holo",
+                value=f"{gh_user}/{repo}",
+                required=True,
             )
-            gh_branch = miru.TextInput(label="Branch", custom_id="gh_branch", placeholder="main", value=branch, required=True)
-            filepath = miru.TextInput(label="Filepath", custom_id="filepath", placeholder="file/path/here", value=fp, required=False)
-            post_title = miru.TextInput(label="Title", custom_id="post_title", placeholder="MyNote", value=title, required=True)
+            gh_branch = miru.TextInput(
+                label="Branch", custom_id="gh_branch", placeholder="main", value=branch, required=True
+            )
+            filepath = miru.TextInput(
+                label="Filepath", custom_id="filepath", placeholder="file/path/here", value=fp, required=False
+            )
+            post_title = miru.TextInput(
+                label="Title", custom_id="post_title", placeholder="MyNote.md", value=title, required=True
+            )
         else:
             repository = miru.TextInput(
                 label="Username/Repository", custom_id="repository", placeholder="cyberselkie/holo", required=True
             )
             gh_branch = miru.TextInput(label="Branch", custom_id="gh_branch", placeholder="main", required=True)
-            filepath = miru.TextInput(label="Filepath", custom_id="filepath", placeholder="file/path/here", required=False)
-            post_title = miru.TextInput(label="Title", custom_id="post_title", placeholder="MyNote", required=True)
+            filepath = miru.TextInput(
+                label="Filepath", custom_id="filepath", placeholder="file/path/here", required=False
+            )
+            post_title = miru.TextInput(label="Title", custom_id="post_title", placeholder="MyNote.md", required=True)
 
         post_contents = miru.TextInput(
             label="File Contents",
@@ -122,19 +134,31 @@ async def append_msg_command(
         if config:
             branch, fp, gh_user, repo, title = config_retrieve(uid)
             repository = miru.TextInput(
-                label="Username/Repository", custom_id="repository", placeholder="cyberselkie/holo", value=f"{gh_user}/{repo}", required=True
+                label="Username/Repository",
+                custom_id="repository",
+                placeholder="cyberselkie/holo",
+                value=f"{gh_user}/{repo}",
+                required=True,
             )
-            gh_branch = miru.TextInput(label="Branch", custom_id="gh_branch", placeholder="main", value=branch, required=True)
-            filepath = miru.TextInput(label="Filepath", custom_id="filepath", placeholder="file/path/here", value=fp, required=False)
-            post_title = miru.TextInput(label="Title", custom_id="post_title", placeholder="MyNote", value=title, required=True)
+            gh_branch = miru.TextInput(
+                label="Branch", custom_id="gh_branch", placeholder="main", value=branch, required=True
+            )
+            filepath = miru.TextInput(
+                label="Filepath", custom_id="filepath", placeholder="file/path/here", value=fp, required=False
+            )
+            post_title = miru.TextInput(
+                label="Title", custom_id="post_title", placeholder="MyNote.md", value=title, required=True
+            )
 
         else:
             repository = miru.TextInput(
                 label="Username/Repository", custom_id="repository", placeholder="cyberselkie/holo", required=True
             )
             gh_branch = miru.TextInput(label="Branch", custom_id="gh_branch", placeholder="main", required=True)
-            filepath = miru.TextInput(label="Filepath", custom_id="filepath", placeholder="file/path/here", required=False)
-            post_title = miru.TextInput(label="Title", custom_id="post_title", placeholder="MyNote", required=True)
+            filepath = miru.TextInput(
+                label="Filepath", custom_id="filepath", placeholder="file/path/here", required=False
+            )
+            post_title = miru.TextInput(label="Title", custom_id="post_title", placeholder="MyNote.md", required=True)
 
         post_contents = miru.TextInput(
             label="File Contents",
